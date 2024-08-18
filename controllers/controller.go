@@ -110,11 +110,14 @@ func GetItems(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tokenString := authHeader[len("Bearer "):]
-	_, err := parseJWT(tokenString)
+	claims, err := parseJWT(tokenString)
 	if err != nil {
 		http.Error(w, "Invalid or expired token", http.StatusUnauthorized)
 		return
 	}
+
+	// доступ к полезной нагрузке(payload)
+	fmt.Printf("Current user ID: %d\n", claims.UserID)
 
 	items := repo.GetAllItems()
 	response, err := json.Marshal(items)
